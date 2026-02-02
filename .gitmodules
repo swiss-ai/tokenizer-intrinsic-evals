@@ -7,3 +7,9 @@
 [submodule "parity-intrinsic/Information-Parity"]
 	path = parity-intrinsic/Information-Parity
 	url = https://github.com/swiss-ai/Information-Parity
+[submodule "parity-based/tokenization-parity"]
+	path = parity-based/tokenization-parity
+	url = https://github.com/swiss-ai/tokenization-parity
+[submodule "parity-based/Information-Parity"]
+	path = parity-based/Information-Parity
+	url = https://github.com/swiss-ai/Information-Parity
