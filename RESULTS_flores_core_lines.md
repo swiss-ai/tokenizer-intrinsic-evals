@@ -2,7 +2,7 @@
 
 _Last updated: 2026-02-17 17:58:08_
 
-| Tokenizer | Vocab Size | Fertility | Compression Rate | Vocab Util. | TTR | Shannon Entropy | Avg Token Rank | Gini | Languages | Dataset | User | Date |
+| Tokenizer | Vocab Size | Fertility ↓ | Compression Rate ↑ | Vocab Util. ↑ | TTR ↑ | Shannon Entropy ↑ | Avg Token Rank ↑ | Gini ↓ | Languages | Dataset | User | Date |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | Classical (meistecl, flores_core) | 128,004 | 36.127 | 0.031 | 0.369 | 0.1009 | 12.91 | 6524.2 | 0.049 | 13 | flores_core | meistecl | 2026-02-17 |
 | Parity-aware (meistecl, flores_core) | 128,004 | 38.139 | 0.029 | 0.322 | 0.0835 | 12.73 | 5367.5 | 0.012 | 13 | flores_core | meistecl | 2026-02-17 |
