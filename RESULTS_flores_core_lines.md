@@ -4,7 +4,6 @@ _Last updated: 2026-03-05 17:21:54_
 
 | Tokenizer | Vocab Size | Fertility ↓ | Compression Rate ↑ | Vocab Util. ↑ | Avg Token Rank ↓ | Gini ↓ | 3-Digit Align. F1 ↑ | Op. Isolation ↑ | Bound. Cross ↓ | Char Split ↓ | Languages | Dataset | User | Date | AST Align. ↑ | Ident. Frag. ↓ | Depth Corr. ↑ | Pat. Stability ↑ |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| BNEng4 (Philip Whittington, flores_core) | 262,144 | 37.466 | 0.031 | 0.157 | 5375.8 | 0.070 | 0.379 | 0.328 | 0.0050 | 0.0132 | 13 | flores_core | Philip Whittington | 2026-03-05 | --- | --- | --- | --- |
 | Classical (meistecl, flores_core) | 128,004 | 36.127 | 0.031 | 0.369 | 6524.2 | 0.049 | 0.789 | 0.294 | 0.0033 | 0.0052 | 13 | flores_core | meistecl | 2026-03-03 | 0.148 | 0.055 | -0.049 | 0.991 |
 | Parity-aware (meistecl, flores_core) | 128,004 | 38.139 | 0.029 | 0.322 | 5367.5 | **0.012** | 0.736 | 0.294 | 0.0037 | 0.0058 | 13 | flores_core | meistecl | 2026-03-03 | 0.188 | 0.082 | -0.049 | 0.991 |
 | Parity-aware (hybrid) (meistecl, flores_core) | 128,004 | 37.385 | 0.030 | 0.330 | 5693.5 | 0.028 | 0.771 | 0.294 | 0.0036 | 0.0057 | 13 | flores_core | meistecl | 2026-03-03 | 0.160 | 0.066 | -0.049 | 0.991 |
@@ -45,3 +44,4 @@ _Last updated: 2026-03-05 17:21:54_
 | Zip2Zip/Apertus (512 codebook) (saibo, flores_core) | 131,584 | 36.910 | 0.031 | 0.340 | 5639.2 | 0.068 | --- | --- | --- | --- | 13 | flores_core | saibo | 2026-02-18 | --- | --- | --- | --- |
 | aggresssive_N2_160000 (vkanjira, flores_core) | 19,051 | 62.586 | 0.019 | 0.295 | 382.8 | 0.120 | 0.635 | 0.382 | --- | --- | 13 | flores_core | vkanjira | 2026-02-22 | --- | --- | --- | --- |
 | Boundless pairwise aggressive n2 (dkletz, flores_core) | 5,033 | 75.587 | 0.017 | **0.480** | **121.7** | 0.131 | --- | 0.087 | --- | --- | 13 | flores_core | dkletz | 2026-02-22 | --- | --- | --- | --- |
+| BNEng4 (Philip Whittington, flores_core) | 262,144 | 37.466 | 0.031 | 0.157 | 5375.8 | 0.070 | 0.379 | 0.328 | 0.0050 | 0.0132 | 13 | flores_core | Philip Whittington | 2026-03-05 | --- | --- | --- | --- |
