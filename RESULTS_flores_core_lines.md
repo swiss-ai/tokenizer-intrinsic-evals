@@ -1,9 +1,10 @@
 # Tokenizer Evaluation Results
 
-_Last updated: 2026-03-09 10:23:39_
+_Last updated: 2026-03-12 08:54:28_
 
 | Tokenizer | Vocab Size | Fertility ↓ | Compression Rate ↑ | Vocab Util. ↑ | Avg Token Rank ↓ | Gini ↓ | 3-Digit Align. F1 ↑ | Op. Isolation ↑ | AST Align. ↑ | Ident. Frag. ↓ | Depth Corr. ↑ | Pat. Stability ↑ | Bound. Cross ↓ | Char Split ↓ | Languages | Dataset | User | Date |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| TEST_ENTRY [128k] | 128,000 | 35.000 | 0.029 | 0.350 | 5000.0 | 0.050 | 0.500 | 0.500 | 0.500 | 0.050 | 0.100 | 0.800 | 0.0020 | 0.0050 | 13 | flores_core | meistecl | 2026-03-12 |
 | Classical (meistecl, flores_core) | 128,004 | 36.127 | 0.028 | 0.369 | 6524.2 | 0.049 | --- | 0.294 | 0.134 | 0.047 | 0.000 | **1.000** | 0.0033 | 0.0052 | 13 | flores_core | meistecl | 2026-03-09 |
 | Parity-aware (meistecl, flores_core) | 128,004 | 38.139 | 0.026 | 0.322 | 5367.5 | **0.012** | --- | 0.294 | 0.169 | 0.073 | 0.000 | 1.000 | 0.0037 | 0.0058 | 13 | flores_core | meistecl | 2026-03-09 |
 | Parity-aware (hybrid) (meistecl, flores_core) | 128,004 | 37.385 | 0.027 | 0.330 | 5693.5 | 0.028 | --- | 0.294 | 0.143 | 0.057 | 0.000 | 1.000 | 0.0036 | 0.0057 | 13 | flores_core | meistecl | 2026-03-09 |
