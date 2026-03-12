@@ -9,6 +9,8 @@ import json
 from typing import Dict, List, Any, Optional
 from pathlib import Path
 
+from ..constants import PACKAGE_ROOT
+
 
 class LanguageMetadata:
     """
@@ -29,6 +31,7 @@ class LanguageMetadata:
         self.config = self._load_config(config_path)
         self.languages = self.config.get('languages', {})
         self.analysis_groups = self.config.get('analysis_groups', {})
+        self._resolve_language_paths()
         
         # Create reverse mappings for efficient lookups
         self._build_reverse_mappings()
@@ -60,6 +63,16 @@ class LanguageMetadata:
         for resource_level, languages in self.analysis_groups.get('resource_levels', {}).items():
             for lang in languages:
                 self.lang_to_resource_level[lang] = resource_level
+
+    def _resolve_language_paths(self):
+        """Resolve relative data paths against the package root."""
+        for lang_info in self.languages.values():
+            data_path = lang_info.get('data_path')
+            if not data_path:
+                continue
+            path = Path(data_path)
+            if not path.is_absolute():
+                lang_info['data_path'] = str((PACKAGE_ROOT / path).resolve())
     
     def _validate_configuration(self):
         """Ensure all languages in analysis_groups exist in languages section."""
