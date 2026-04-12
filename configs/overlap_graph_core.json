@@ -4,5 +4,6 @@
   "fra_Latn": ["spa_Latn", "por_Latn"],
   "jpn_Jpan": ["kor_Hang", "cmn_Hani"],
   "rus_Cyrl": ["hin_Deva"],
-  "tur_Latn": ["ind_Latn"]
+  "tur_Latn": ["ind_Latn"],
+  "spa_Latn": ["por_Latn"]
 }

@@ -127,7 +127,8 @@ uv sync --extra code-ast
 | `--samples-per-lang N` | Text samples per language |
 | `--save-tokenized-data` | Cache tokenized data for reuse |
 | `--no-global-lines` | Hide global average lines in plots |
-| `--overlap-graph FILE` | JSON adjacency dict defining which language pairs to evaluate for vocabulary overlap (see [Vocabulary Overlap](#vocabulary-overlap)) |
+| `--vocabulary-overlap` | Enable pairwise vocabulary overlap (JSD) analysis; disabled by default |
+| `--overlap-graph FILE` | JSON adjacency dict of language pairs to evaluate (requires `--vocabulary-overlap`; if omitted, all pairs are computed) |
 
 ### Markdown Results Table
 
@@ -573,10 +574,19 @@ The **adjacency dict** format is the recommended approach for large language set
 Pass it as a JSON file:
 
 ```bash
+# Enable with a specific graph
 uv run tokenizer-analysis \
     --tokenizer-config configs/baseline_tokenizers.json \
     --language-config configs/core_lang_config.json \
+    --vocabulary-overlap \
     --overlap-graph configs/overlap_graph_core.json \
+    ...
+
+# Enable and evaluate all pairs (no graph)
+uv run tokenizer-analysis \
+    --tokenizer-config configs/baseline_tokenizers.json \
+    --language-config configs/core_lang_config.json \
+    --vocabulary-overlap \
     ...
 ```
 
