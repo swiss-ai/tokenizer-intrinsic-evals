@@ -14,6 +14,7 @@ from .morphscore import MorphScoreMetrics
 from .math import DigitBoundaryMetrics
 from .code_ast import ASTBoundaryMetrics
 from .utf8_integrity import UTF8IntegrityMetrics
+from .pairwise import VocabularyOverlapMetrics
 
 __all__ = [
     "BaseMetrics",
@@ -25,4 +26,5 @@ __all__ = [
     "DigitBoundaryMetrics",
     "ASTBoundaryMetrics",
     "UTF8IntegrityMetrics",
+    "VocabularyOverlapMetrics",
 ]
