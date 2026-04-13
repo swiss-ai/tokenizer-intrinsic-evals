@@ -50,6 +50,19 @@ def load_config_from_file(config_path: str) -> Dict:
         return json.load(f)
 
 
+def _load_overlap_graph(path: Optional[str]) -> Optional[Dict[str, List[str]]]:
+    """Load a vocabulary-overlap adjacency dict from *path*.
+
+    Returns ``None`` when *path* is ``None`` (compute all pairs).
+    Keys starting with ``_`` (e.g. ``_comment``) are ignored.
+    """
+    if path is None:
+        return None
+    with open(path, 'r') as f:
+        raw = json.load(f)
+    return {k: v for k, v in raw.items() if not k.startswith('_')}
+
+
 def create_sample_configs() -> Dict[str, Dict]:
     """Create sample tokenizer configurations for testing."""
     return {
@@ -761,6 +774,30 @@ Examples:
              "descending otherwise."
     )
 
+    # Vocabulary overlap
+    parser.add_argument(
+        "--vocabulary-overlap",
+        action="store_true",
+        default=False,
+        help=(
+            "Enable pairwise vocabulary overlap analysis (Jensen-Shannon Divergence). "
+            "Disabled by default. When enabled without --overlap-graph, all language pairs are evaluated."
+        )
+    )
+    parser.add_argument(
+        "--overlap-graph",
+        type=str,
+        default=None,
+        metavar="PATH",
+        help=(
+            "Path to a JSON file defining a sparse language-pair graph for vocabulary "
+            "overlap analysis (requires --vocabulary-overlap). "
+            "The file should contain an adjacency dict mapping each language code to a "
+            'list of neighbours, e.g. {"eng_Latn": ["fra_Latn", "deu_Latn"]}. '
+            "Only the listed edges are evaluated."
+        )
+    )
+
     # Tokenized data saving options
     parser.add_argument(
         "--save-tokenized-data",
@@ -952,7 +989,9 @@ def run_from_args(args: argparse.Namespace):
             per_language_plots=args.per_language_plots,
             faceted_plots=args.faceted_plots,
             math_data_path=args.math_data,
-            use_builtin_math_data=args.use_builtin_math_data
+            use_builtin_math_data=args.use_builtin_math_data,
+            run_vocabulary_overlap=args.vocabulary_overlap,
+            overlap_languages=_load_overlap_graph(args.overlap_graph) if args.vocabulary_overlap else None
         )
     if args.test:
         logger.warning("Test methods not yet updated for unified system")

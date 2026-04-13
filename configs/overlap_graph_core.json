@@ -1,0 +1,9 @@
+{
+  "_comment": "Sparse vocabulary-overlap graph for core_lang_config.json. Each key is connected to its neighbours. Chosen to cover: (1) close language-family pairs sharing subword tokens, (2) same-script but distant languages, (3) cross-script pairs to measure tokenizer divergence.",
+  "eng_Latn": ["fra_Latn", "deu_Latn", "cmn_Hani", "arb_Arab"],
+  "fra_Latn": ["spa_Latn", "por_Latn"],
+  "jpn_Jpan": ["kor_Hang", "cmn_Hani"],
+  "rus_Cyrl": ["hin_Deva"],
+  "tur_Latn": ["ind_Latn"],
+  "spa_Latn": ["por_Latn"]
+}

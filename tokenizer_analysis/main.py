@@ -4,7 +4,7 @@ Unified main module supporting both raw and pre-tokenized input modes.
 
 import logging
 import os
-from typing import Dict, List, Any, Optional, Tuple, Union
+from typing import Dict, List, Any, Optional, Tuple, Union, Sequence
 import numpy as np
 
 from .core.input_types import TokenizedData, InputSpecification
@@ -15,6 +15,7 @@ from .metrics.base import BaseMetrics
 from .metrics.basic import BasicTokenizationMetrics
 from .metrics.information_theoretic import InformationTheoreticMetrics
 from .metrics.gini import TokenizerGiniMetrics
+from .metrics.pairwise import VocabularyOverlapMetrics
 from .metrics.morphological import MorphologicalMetrics
 from .metrics.morphscore import MorphScoreMetrics
 from .metrics.math import DigitBoundaryMetrics
@@ -54,7 +55,9 @@ class UnifiedTokenizerAnalyzer:
                  faceted_plots: bool = False,
                  code_ast_config: Optional[Dict[str, str]] = None,
                  math_data_path: Optional[str] = None,
-                 use_builtin_math_data: bool = False):
+                 use_builtin_math_data: bool = False,
+                 overlap_languages: Optional[Union[Sequence[str], Sequence[Tuple[str, str]], Dict[str, List[str]]]] = None,
+                 run_vocabulary_overlap: bool = False):
         """
         Initialize unified analyzer.
 
@@ -124,6 +127,11 @@ class UnifiedTokenizerAnalyzer:
             input_provider, measurement_config=measurement_config, language_metadata=language_metadata
         )
         
+        # Initialize vocabulary overlap metrics (only when explicitly enabled)
+        self.vocabulary_overlap_metrics = (
+            VocabularyOverlapMetrics(input_provider, languages=overlap_languages)
+            if run_vocabulary_overlap else None
+        )
         # Initialize morphological metrics if config provided
         self.morphological_metrics = None
         if morphological_config:
@@ -244,7 +252,13 @@ class UnifiedTokenizerAnalyzer:
         logger.info("Computing Gini metrics...")
         gini_results = self.gini_metrics.compute(tokenized_data)
         results.update(gini_results)
-        
+
+        # Run vocabulary overlap metrics (only when enabled)
+        if self.vocabulary_overlap_metrics:
+            logger.info("Computing vocabulary overlap metrics...")
+            vocabulary_overlap_results = self.vocabulary_overlap_metrics.compute(tokenized_data)
+            results.update(vocabulary_overlap_results)
+
         # Run morphological metrics if available
         if self.morphological_metrics and include_morphological:
             logger.info("Computing morphological metrics...")

@@ -127,6 +127,8 @@ uv sync --extra code-ast
 | `--samples-per-lang N` | Text samples per language |
 | `--save-tokenized-data` | Cache tokenized data for reuse |
 | `--no-global-lines` | Hide global average lines in plots |
+| `--vocabulary-overlap` | Enable pairwise vocabulary overlap (JSD) analysis; disabled by default |
+| `--overlap-graph FILE` | JSON adjacency dict of language pairs to evaluate (requires `--vocabulary-overlap`; if omitted, all pairs are computed) |
 
 ### Markdown Results Table
 
@@ -498,6 +500,109 @@ Then the **Tokenizer Fairness Gini** with equal weights is
 * **Range:** $`0 \le \mathrm{TFG} \le 1`$
   * $`0`$: perfect parity (every language has identical byte-normalised token cost).
   * $`1`$: maximal unfairness.
+
+### Vocabulary Overlap
+
+**Pairwise Vocabulary Overlap** (`vocabulary_overlap`): Measures how much of the empirical token distribution is shared between two languages, using Jensen-Shannon Divergence (JSD).
+
+Based on [Limisiewicz et al., ACL Findings 2023](https://aclanthology.org/2023.findings-acl.350).
+
+#### Definition
+
+For each language $`\ell`$ and a tokenizer with vocabulary $`V`$, define the **empirical token distribution** over corpus $`C_\ell`$:
+
+```math
+d_{\ell,V}(v) \;=\; \frac{f(v,\, C_\ell)}{\displaystyle\sum_{v' \in V} f(v',\, C_\ell)}
+```
+
+where $`f(v, C_\ell)`$ is the count of token $`v`$ in corpus $`C_\ell`$.
+
+For a language pair $`(\ell_1, \ell_2)`$, define the mixture distribution:
+
+```math
+m_{\ell_1,\ell_2}(v) \;=\; \tfrac{1}{2}\,d_{\ell_1,V}(v) \;+\; \tfrac{1}{2}\,d_{\ell_2,V}(v)
+```
+
+The **Jensen-Shannon Divergence** between the two languages is:
+
+```math
+\mathrm{JSD}(d_{\ell_1} \,\|\, d_{\ell_2})
+\;=\;
+\frac{1}{2}\sum_{v \in V} d_{\ell_1}(v)\,\log_2\!\frac{d_{\ell_1}(v)}{m(v)}
+\;+\;
+\frac{1}{2}\sum_{v \in V} d_{\ell_2}(v)\,\log_2\!\frac{d_{\ell_2}(v)}{m(v)}
+```
+
+- **Range:** $`0 \le \mathrm{JSD} \le 1`$
+  - $`0`$: identical token distributions — maximum overlap.
+  - $`1`$: fully disjoint vocabularies — no shared token usage.
+- The metric is **symmetric** and **frequency-weighted**: shared tokens that appear rarely contribute less than high-frequency shared tokens.
+
+Unlike simply counting shared vocabulary types, JSD reflects *how* tokens are used — a tokenizer that allocates the same tokens to two languages in similar proportions scores low JSD even if its vocabulary is large.
+
+#### Output structure
+
+Results are reported **per language pair** (not per language), nested under the tokenizer:
+
+```
+vocabulary_overlap
+└── per_tokenizer
+    └── <tokenizer_name>
+        ├── languages_used: [str, ...]
+        └── language_pairs
+            └── <l1>_vs_<l2>
+                ├── jsd          # JSD ∈ [0, 1]; lower = more overlap
+                ├── overlap      # 1 − JSD (convenience field)
+                ├── tokens_l1    # total tokens seen for l1
+                ├── tokens_l2    # total tokens seen for l2
+                └── shared_types # vocabulary types present in both languages
+```
+
+#### Controlling which pairs are evaluated
+
+Three modes are supported via the `--overlap-graph` flag or the `languages` constructor argument:
+
+| Mode | Example |
+|------|---------|
+| **All pairs** (default) | omit `--overlap-graph` |
+| **Flat list** — all n(n−1)/2 combinations among listed languages | `["eng_Latn", "fra_Latn", "deu_Latn"]` |
+| **Explicit pairs** | `[["fra_Latn", "eng_Latn"], ["jpn_Jpan", "eng_Latn"]]` |
+| **Adjacency dict / graph** | `{"eng_Latn": ["fra_Latn", "deu_Latn"], "jpn_Jpan": ["kor_Hang"]}` |
+
+The **adjacency dict** format is the recommended approach for large language sets — it defines a sparse graph and computes only the specified edges. Duplicate edges (A→B and B→A both listed) are automatically deduplicated.
+
+Pass it as a JSON file:
+
+```bash
+# Enable with a specific graph
+uv run tokenizer-analysis \
+    --tokenizer-config configs/baseline_tokenizers.json \
+    --language-config configs/core_lang_config.json \
+    --vocabulary-overlap \
+    --overlap-graph configs/overlap_graph_core.json \
+    ...
+
+# Enable and evaluate all pairs (no graph)
+uv run tokenizer-analysis \
+    --tokenizer-config configs/baseline_tokenizers.json \
+    --language-config configs/core_lang_config.json \
+    --vocabulary-overlap \
+    ...
+```
+
+`configs/overlap_graph_core.json` ships with the repo and connects 10 linguistically motivated pairs (Romance cluster, Germanic pair, East Asian script family, cross-script anchors):
+
+```json
+{
+  "eng_Latn": ["fra_Latn", "deu_Latn", "cmn_Hani", "arb_Arab"],
+  "fra_Latn": ["spa_Latn", "por_Latn"],
+  "jpn_Jpan": ["kor_Hang", "cmn_Hani"],
+  "rus_Cyrl": ["hin_Deva"],
+  "tur_Latn": ["ind_Latn"]
+}
+```
+
+> **Note:** Vocabulary overlap is computed on the **full dataset** only — it is intentionally excluded from grouped analysis (e.g. script-family groups) because a group often contains only one language from a pair, making per-group JSD meaningless.
 
 ## Data Format Requirements
 
