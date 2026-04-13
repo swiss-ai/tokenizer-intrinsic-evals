@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 try:
     from morphscore import MorphScore
     MORPHSCORE_AVAILABLE = True
-except (ImportError, SyntaxError):
+except ImportError:
     logger.warning("MorphScore library not available. MorphScore metrics will be disabled.")
     MORPHSCORE_AVAILABLE = False
 
