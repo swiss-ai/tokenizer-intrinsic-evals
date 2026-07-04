@@ -1,3 +1,15 @@
+> **⚠️ This repository has moved and is archived (read-only).**
+>
+> Development of TokEval continues at
+> **https://github.com/cimeister/tokenizer-intrinsic-evals**.
+>
+> Please update your remote:
+> `git remote set-url origin https://github.com/cimeister/tokenizer-intrinsic-evals.git`
+>
+> The content below is the last state of this fork and is no longer maintained.
+
+---
+
 # SwissAI TokEval
 A toolkit for computing intrinsic quality metrics for tokenizers across natural language, code, and math.
 
