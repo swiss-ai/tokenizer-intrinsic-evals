@@ -9,6 +9,8 @@ import json
 from typing import Dict, List, Any, Optional
 from pathlib import Path
 
+from ..constants import PACKAGE_ROOT
+
 
 class LanguageMetadata:
     """
@@ -29,6 +31,7 @@ class LanguageMetadata:
         self.config = self._load_config(config_path)
         self.languages = self.config.get('languages', {})
         self.analysis_groups = self.config.get('analysis_groups', {})
+        self._resolve_language_paths()
         
         # Create reverse mappings for efficient lookups
         self._build_reverse_mappings()
@@ -60,6 +63,14 @@ class LanguageMetadata:
         for resource_level, languages in self.analysis_groups.get('resource_levels', {}).items():
             for lang in languages:
                 self.lang_to_resource_level[lang] = resource_level
+
+    def _resolve_language_paths(self):
+        """Resolve relative data paths against the package root."""
+        for lang_code, lang_info in self.languages.items():
+            data_path = lang_info['data_path']
+            path = Path(data_path)
+            if not path.is_absolute():
+                lang_info['data_path'] = str((PACKAGE_ROOT / path).resolve())
     
     def _validate_configuration(self):
         """Ensure all languages in analysis_groups exist in languages section."""
@@ -75,6 +86,13 @@ class LanguageMetadata:
         missing_languages = all_analysis_languages - set(self.languages.keys())
         if missing_languages:
             raise ValueError(f"Languages in analysis_groups not found in languages section: {missing_languages}")
+
+        missing_data_paths = [
+            lang_code for lang_code, lang_info in self.languages.items()
+            if not lang_info.get('data_path')
+        ]
+        if missing_data_paths:
+            raise ValueError(f"Languages missing data_path: {missing_data_paths}")
     
     # Language information methods
     def get_language_info(self, language_code: str) -> Dict[str, Any]:
@@ -156,17 +174,14 @@ class LanguageMetadata:
     # Data path methods
     def get_data_path(self, language_code: str) -> Optional[str]:
         """Get data path for a specific language."""
-        lang_info = self.languages.get(language_code, {})
-        return lang_info.get('data_path')
+        return self.languages[language_code]['data_path']
     
     def get_language_paths(self) -> Dict[str, str]:
         """Get all language code to data path mappings."""
-        paths = {}
-        for lang_code, lang_info in self.languages.items():
-            data_path = lang_info.get('data_path')
-            if data_path:
-                paths[lang_code] = data_path
-        return paths
+        return {
+            lang_code: lang_info['data_path']
+            for lang_code, lang_info in self.languages.items()
+        }
 
 
 def load_language_metadata(config_path: str) -> LanguageMetadata:

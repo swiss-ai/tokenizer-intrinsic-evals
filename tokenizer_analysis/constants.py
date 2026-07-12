@@ -5,7 +5,11 @@ This module defines all magic numbers and configuration constants used throughou
 the tokenizer analysis codebase to improve maintainability and reduce errors.
 """
 
+from pathlib import Path
 from typing import List
+
+
+PACKAGE_ROOT = Path(__file__).resolve().parents[1]
 
 
 # --- Text Processing ---
